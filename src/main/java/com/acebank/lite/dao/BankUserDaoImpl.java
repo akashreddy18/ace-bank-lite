@@ -269,7 +269,7 @@ public class BankUserDaoImpl implements BankUserDao {
                 userId = rs.getInt("USER_ID");
                 PreparedStatement ps2 = conn.prepareStatement(QueryLoader.get("user.update_password"));
                 ps2.setString(1, newPw);
-                ps2.setInt(2, userId);
+                ps2.setInt(2, accountNo);
                 return ps2.executeUpdate() > 0;
             }
             return false;
@@ -323,5 +323,19 @@ public class BankUserDaoImpl implements BankUserDao {
         return BigDecimal.ZERO;
     }
 
+    /**
+     * Resets the password hash for a user identified by account number.
+     * Called after OTP verification — does NOT require the old password.
+     */
+    @Override
+    public boolean resetPasswordByAccount(int accountNo, String newHashedPassword) throws SQLException {
+        // Reuses the existing YAML query: UPDATE USERS JOIN ACCOUNTS SET PASSWORD_HASH = ? WHERE ACCOUNT_NO = ?
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(QueryLoader.get("user.update_password"))) {
+            ps.setString(1, newHashedPassword);
+            ps.setInt(2, accountNo);
+            return ps.executeUpdate() > 0;
+        }
+    }
 
 }

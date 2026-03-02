@@ -265,5 +265,27 @@ public class BankServiceImpl implements BankService {
         }
     }
 
+    // ── Forgot-Password: Reset password after OTP verification ──
+    @Override
+    public boolean resetPassword(int accountNo, String newPlainPassword) {
+        try {
+            String newHash = PasswordUtil.hashPassword(newPlainPassword);
+            return userDao.resetPasswordByAccount(accountNo, newHash);
+        } catch (Exception e) {
+            log.severe("resetPassword failed for account " + accountNo + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    // ── Return recovery details by email (used by ForgotPassword servlet) ──
+    @Override
+    public java.util.Optional<com.acebank.lite.models.AccountRecoveryDTO> getRecoveryDetails(String email) {
+        try {
+            return userDao.getRecoveryDetails(email);
+        } catch (Exception e) {
+            log.severe("getRecoveryDetails failed for email " + email + ": " + e.getMessage());
+            return java.util.Optional.empty();
+        }
+    }
 
 }

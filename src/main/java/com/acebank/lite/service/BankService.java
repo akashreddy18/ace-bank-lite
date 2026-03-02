@@ -1,7 +1,6 @@
 package com.acebank.lite.service;
 
-
-
+import com.acebank.lite.models.AccountRecoveryDTO;
 import com.acebank.lite.models.LoginResult;
 import com.acebank.lite.models.ServiceResponse;
 import com.acebank.lite.models.Transaction;
@@ -29,7 +28,13 @@ public interface BankService {
 
     Optional<LoginResult> registerUser(User user);
 
-    public boolean recoverAccount(String email);
+    boolean recoverAccount(String email);
 
-    public boolean applyForLoan(String firstName, String email, String loanType);
+    boolean applyForLoan(String firstName, String email, String loanType);
+
+    /** Reset a user's password directly (used after OTP verification). */
+    boolean resetPassword(int accountNo, String newPlainPassword);
+
+    /** Fetch recovery details (name + account no) by email. */
+    Optional<AccountRecoveryDTO> getRecoveryDetails(String email);
 }

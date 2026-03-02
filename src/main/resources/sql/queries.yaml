@@ -10,7 +10,7 @@ user:
     SELECT u.FIRST_NAME, u.LAST_NAME, a.ACCOUNT_NO 
     FROM USERS u 
     JOIN ACCOUNTS a ON u.USER_ID = a.USER_ID 
-    WHERE u.EMAIL = ?
+    WHERE LOWER(u.EMAIL) = LOWER(?)
   get_password_by_acc: >
     SELECT u.PASSWORD_HASH 
     FROM USERS u 
@@ -28,6 +28,12 @@ user:
     UPDATE USERS u
     JOIN ACCOUNTS a ON u.USER_ID = a.USER_ID
     SET u.PASSWORD_HASH = ?
+    WHERE a.ACCOUNT_NO = ?
+
+  # Used by changePassword DAO — fetch hash + user_id by account
+  check_password_by_acc: >
+    SELECT u.PASSWORD_HASH, u.USER_ID FROM USERS u
+    JOIN ACCOUNTS a ON u.USER_ID = a.USER_ID
     WHERE a.ACCOUNT_NO = ?
 
 account:

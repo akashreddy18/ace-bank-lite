@@ -34,4 +34,7 @@ public interface BankUserDao {
     boolean accountExists(int accountNo) throws SQLException;
 
     BigDecimal getBalance(int accountNo) throws SQLException;
+
+    /** Directly overwrite the stored password hash — called after OTP verification. */
+    boolean resetPasswordByAccount(int accountNo, String newHashedPassword) throws SQLException;
 }
